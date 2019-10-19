@@ -64,6 +64,8 @@
 </template>
 
 <script>
+  import axios from "axios";
+
   export default {
     data() {
       return {
@@ -81,7 +83,11 @@
     methods: {
       onSubmit(evt) {
         evt.preventDefault()
-        alert(JSON.stringify(this.form))
+        axios
+                .post("http://localhost:3030/create", this.form)
+                .then(response => response.json("Success"))
+                .catch(error => alert(error))
+        //alert(JSON.stringify(this.form))
       },
       onReset(evt) {
         evt.preventDefault()
