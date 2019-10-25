@@ -69,6 +69,7 @@
   export default {
     data() {
       return {
+        // Convenience population of data, to be removed before production
         form: {
           projectName: 'Aer',
           projectCategory: 'Crafts',
