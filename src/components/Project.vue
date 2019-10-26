@@ -89,8 +89,31 @@
 </template>
 
 <script>
+    import axios from "axios";
+
     export default {
-        name: "Project"
+        name: "Project",
+        data() {
+            return {
+
+            }
+        },
+        beforeMount() {
+            this.loadProject()
+        },
+        methods: {
+            loadProject() {
+                axios
+                    .get("http://localhost:3000/project/" + this.$route.params.projectName)
+                    .then((response) => {
+                        alert(response.data);
+                    })
+                    .catch((error) => {
+                        // Failure
+                        alert(error);
+                    });
+            }
+        },
     }
 </script>
 

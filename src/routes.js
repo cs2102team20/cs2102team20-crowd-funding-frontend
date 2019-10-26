@@ -12,7 +12,7 @@ const routes = [
   { path: "/login", component: Login },
   { path: "/projects", component: Projects },
   { path: "/create", component: Create },
-  { path: "/project", component: Project },
+  { path: `/project/:projectName`, component: Project },
 ];
 
 export default routes;
