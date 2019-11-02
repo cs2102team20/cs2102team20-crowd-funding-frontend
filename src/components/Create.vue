@@ -7,7 +7,13 @@
                 v-model="form.projectName"
                 type="text"
                 required
+                @focus="clearStatus"
+                @keypress="clearStatus"
+                :class= "{'is-invalid': formStatus.nameError}"
         ></b-form-input>
+        <small v-if="formStatus.nameError" id="passwordHelp" class="text-danger col-sm-3">
+          Project name already exists. Please choose another name.
+        </small>
       </b-form-group>
 
       <b-form-group id="input-group-category" label="Category:" label-for="input-category">
@@ -120,18 +126,37 @@
             }
           ]
         },
-        categories: ['Arts', 'Crafts', 'Electronics', 'Games']
+        formStatus: {
+          nameError: false,
+        },
+        categories: ['Arts', 'Crafts', 'Electronics', 'Games'],
+        projectNames: []
       }
     },
     methods: {
+      loadProjectNames() {
+        axios
+                .get("http://localhost:3000/create")
+                .then(res => {
+                  this.projectNames = res.data
+                })
+                .catch(error => {
+                  alert(error)
+                })
+      },
       onSubmit(evt) {
-
-        // checks
-
         evt.preventDefault()
+
+        // replace multi whitespaces with single space and remove extra space on both ends
+        var parsedProjectName = ((this.form.projectName.replace(/\s+\s/g, ' ')).trim());
+        if (this.projectNames.indexOf(parsedProjectName) < 0) {
+          this.formStatus.nameError = true
+          return
+        }
+
         axios
                 .post("http://localhost:3000/create", {
-                  projectName: this.form.projectName,
+                  projectName: parsedProjectName,
                   projectCategory: this.form.projectCategory,
                   projectImageUrl: this.form.projectImageUrl,
                   projectDeadline: this.form.projectDeadline,
@@ -164,8 +189,10 @@
           rewardPledgeAmount: '',
           rewardDescription: '',
         })
-      }
-
+      },
+      clearStatus() {
+        this.formStatus.nameError = false;
+      },
     }
   }
 </script>
