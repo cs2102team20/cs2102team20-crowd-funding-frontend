@@ -19,7 +19,12 @@
                         <h6>{{reward.reward_name}}</h6>
                         <p>{{reward.reward_description}}</p>
                     </b-card-text>
-                    <b-button href="#" variant="primary">Pledge</b-button>
+                    <b-button
+                            @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
+                            href="#" variant="primary"
+                    >
+                        Pledge
+                    </b-button>
                 </b-card>
             </b-col>
         </b-row>
@@ -32,6 +37,20 @@
         props: {
             project: Object,
             rewards: Array
+        },
+        methods: {
+            pledge(rewardName, rewardAmount) {
+                if (this.$store.state.wallet.amount < rewardAmount) {
+                    alert("Wallet balance is low. You might want to top up. Current balance is "
+                        + this.$store.state.wallet.amount)
+                    return
+                }
+
+                this.$emit("pledge:reward", {
+                    reward_name: rewardName,
+                    back_amount: rewardAmount
+                })
+            }
         }
     }
 </script>

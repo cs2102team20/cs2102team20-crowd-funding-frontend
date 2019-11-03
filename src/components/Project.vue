@@ -40,6 +40,7 @@
           <campaign-section
                   v-bind:project="project"
                   v-bind:rewards="rewards"
+                  @pledge:reward="backProject"
           />
         </b-tab>
         <b-tab title="Updates">
@@ -270,14 +271,14 @@ export default {
           alert(error);
         });
     },
-    
-    backProject() {
+    backProject(reward) {
       // TODO: provide front-end check on negative backs-amount
       axios
         .post(`/project/${this.project.project_name}/back`, {
           user_email: this.$store.state.user.email,
           project_backed_name: this.project.project_name,
-          backs_amount: this.backs_amount
+          reward_name: reward.reward_name,
+          backs_amount: reward.back_amount,
         })
         .then(response => {
           if (response.data == "Failure") {
