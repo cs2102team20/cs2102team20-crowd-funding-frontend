@@ -130,15 +130,20 @@
           nameError: false,
         },
         categories: ['Arts', 'Crafts', 'Electronics', 'Games'],
-        projectNames: []
+        projectNames: [],
+        redirectUrl: '',
+        createSuccess: false,
       }
+    },
+    mounted() {
+      this.loadProjectNames()
     },
     methods: {
       loadProjectNames() {
         axios
                 .get("http://localhost:3000/create")
                 .then(res => {
-                  this.projectNames = res.data
+                  this.projectNames = res.data.map(project => project.project_name)
                 })
                 .catch(error => {
                   alert(error)
@@ -149,7 +154,10 @@
 
         // replace multi whitespaces with single space and remove extra space on both ends
         var parsedProjectName = ((this.form.projectName.replace(/\s+\s/g, ' ')).trim());
-        if (this.projectNames.indexOf(parsedProjectName) < 0) {
+        console.log(this.projectNames.toString())
+        console.log(parsedProjectName)
+        console.log(this.projectNames.indexOf(parsedProjectName));
+        if (this.projectNames.indexOf(parsedProjectName) >= 0) {
           this.formStatus.nameError = true
           return
         }
@@ -162,16 +170,26 @@
                   projectDeadline: this.form.projectDeadline,
                   projectFundingGoal: this.form.projectFundingGoal,
                   projectDescription: this.form.projectDescription,
-                  projectRewards: this.form.projectRewards
+                  projectRewards: this.form.projectRewards,
+                  creatorEmail: this.$store.state.user.email,
                 })
-                .then(
-                        function (response) {
+                .then(response => {
+                          //this.$set(this.projectNames, 0, parsedProjectName)
+                          //this.projectNames.push(parsedProjectName)
+                          //console.log(this.projectNames.toString());
                           alert("Project Created!");
-                        },
-                        function (response) {
-                          alert("Unable to create project");
+                          this.createSuccess = true
                         }
-                );
+                )
+                .catch(error => {
+                  alert(error)
+                })
+                .finally(() => {
+                  if (this.createSuccess) {
+                    console.log("redirecting to new page")
+                    this.$router.push('/project/' + parsedProjectName)
+                  }
+                });
       },
       onReset(evt) {
         evt.preventDefault()
