@@ -20,11 +20,13 @@
                         <p>{{reward.reward_description}}</p>
                     </b-card-text>
                     <b-button
+                            v-if="!isBackedReward(reward.reward_name)"
                             @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
-                            href="#" variant="primary"
+                            href="#" variant="success"
                     >
                         Pledge
                     </b-button>
+                    <b-button v-else>You have pledge for this reward!</b-button>
                 </b-card>
             </b-col>
         </b-row>
@@ -36,7 +38,12 @@
         name: "CampaignSection",
         props: {
             project: Object,
-            rewards: Array
+            rewards: Array,
+            backedRewards: Array,
+        },
+        data() {
+          return {
+          }
         },
         methods: {
             pledge(rewardName, rewardAmount) {
@@ -50,6 +57,10 @@
                     reward_name: rewardName,
                     back_amount: rewardAmount
                 })
+            },
+            isBackedReward(rewardName) {
+                // If reward has been chosen during backing, return true
+                return this.backedRewards.indexOf(rewardName) >= 0
             }
         }
     }

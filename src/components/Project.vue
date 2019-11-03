@@ -40,6 +40,7 @@
           <campaign-section
                   v-bind:project="project"
                   v-bind:rewards="rewards"
+                  v-bind:backedRewards="backedRewards"
                   @pledge:reward="backProject"
           />
         </b-tab>
@@ -62,7 +63,7 @@
       <p>Please log in dude.</p>
     </div>
 
-
+    <el-button @click="getBackedRewards">Click ME!</el-button>
 
     <b-modal title="Manage Backings" id="backs-modal" hide-footer>
       <div>
@@ -148,7 +149,7 @@ export default {
       titles: null,
       tableData: null,
       is_liked: null,
-
+      backedRewards: [],
       actionCol: {
         props: {
           label: 'Actions',
@@ -182,13 +183,15 @@ export default {
     this.loadComments();
     this.isBacked();
     this.isLiked();
+    this.getBackedRewards();
   },
   computed: {
   },
   methods: {
     loadProject() {
       axios
-        .get("http://localhost:3000/project/" + this.$route.params.projectName)
+        .get("http://localhost:3000/project/" +
+                this.$route.params.projectName)
         .then(response => {
           // console.log(response.data);
           this.project = response.data;
@@ -243,6 +246,23 @@ export default {
                 alert(error);
               });
     },
+    getBackedRewards() {
+      axios
+              .get("http://localhost:3000/project/backedRewards/" + this.$route.params.projectName + "/"
+                      + this.$store.state.user.email)
+              .then(response => {
+                this.backedRewards = response.data.map(reward => reward.reward_name)
+                //console.log("Backed projects are")
+                //console.log(this.backedRewards)
+                //console.log("Response data\n")
+                //console.log(response.data)
+                //console.log("Response data after turning to array is\n")
+                //console.log(response.data.map(reward => reward.reward_name))
+              })
+              .catch(error => {
+                alert(error)
+              })
+    },
     postComment(newComment) {
       axios
               .post("http://localhost:3000/project/" + this.$route.params.projectName + "/comments", {
@@ -294,6 +314,7 @@ export default {
             // this.$bvModal.hide("backs-modal");
             this.is_backed = true;
             this.listBackings();
+            this.$set(this.backedRewards, 0, reward.reward_name)
           }
         })
         .catch(() => {
