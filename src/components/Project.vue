@@ -41,7 +41,7 @@
             <b-row>
               <b-col cols="8">
                 <h2>Project Description</h2>
-                <p>{{this.project.project_description}}}</p>
+                <p>{{this.project.project_description}}</p>
               </b-col>
               <b-col>
                 <h2>Rewards</h2>
