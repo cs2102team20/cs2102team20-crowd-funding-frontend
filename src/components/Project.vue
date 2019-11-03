@@ -42,6 +42,7 @@
                   v-bind:rewards="rewards"
                   v-bind:backedRewards="backedRewards"
                   @pledge:reward="backProject"
+                  @unpledge:reward="unbackProject"
           />
         </b-tab>
         <b-tab title="Updates">
@@ -292,7 +293,6 @@ export default {
         });
     },
     backProject(reward) {
-      // TODO: provide front-end check on negative backs-amount
       axios
         .post(`/project/${this.project.project_name}/back`, {
           user_email: this.$store.state.user.email,
@@ -323,6 +323,37 @@ export default {
             type: "warning"
           });
         });
+    },
+    unbackProject(reward) {
+      axios
+              .post(`/project/${this.project.project_name}/unback`, {
+                user_email: this.$store.state.user.email,
+                project_backed_name: this.project.project_name,
+                reward_name: reward.reward_name,
+              })
+              .then(response => {
+                if (response.data == "Failure") {
+                  this.$message({
+                    message: "Unable to unback at the moment...",
+                    type: "error"
+                  });
+                } else {
+                  this.$message({
+                    message: "Successfully unback",
+                    type: "success"
+                  });
+                  // this.$bvModal.hide("backs-modal");
+                  this.is_backed = false;
+                  this.listBackings();
+                  this.$delete(this.backedRewards, this.backedRewards.indexOf(reward.reward_name))
+                }
+              })
+              .catch(() => {
+                this.$message({
+                  message: "An error occurred.",
+                  type: "warning"
+                });
+              });
     },
     listBackings() {
       if (this.is_backed) {

@@ -28,6 +28,7 @@
                     </b-button>
                     <b-button v-else
                               id="unback-btn"
+                              @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
                     >
                         <span>You have pledge for this reward!</span>
                     </b-button>
@@ -51,16 +52,24 @@
         },
         methods: {
             pledge(rewardName, rewardAmount) {
-                if (this.$store.state.wallet.amount < rewardAmount) {
-                    alert("Wallet balance is low. You might want to top up. Current balance is "
-                        + this.$store.state.wallet.amount)
-                    return
-                }
+                if (this.isBackedReward(rewardName)) {
+                    alert("Are you sure you want to remove your pledge?") // to be changed to modal if time permits
+                    this.$emit("unpledge:reward", {
+                        reward_name: rewardName,
+                        back_amount: rewardAmount
+                    })
+                } else {
+                    if (this.$store.state.wallet.amount < rewardAmount) {
+                        alert("Wallet balance is low. You might want to top up. Current balance is "
+                            + this.$store.state.wallet.amount)
+                        return
+                    }
 
-                this.$emit("pledge:reward", {
-                    reward_name: rewardName,
-                    back_amount: rewardAmount
-                })
+                    this.$emit("pledge:reward", {
+                        reward_name: rewardName,
+                        back_amount: rewardAmount
+                    })
+                }
             },
             isBackedReward(rewardName) {
                 // If reward has been chosen during backing, return true
