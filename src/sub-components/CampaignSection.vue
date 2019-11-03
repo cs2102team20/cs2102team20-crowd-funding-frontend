@@ -26,7 +26,11 @@
                     >
                         Pledge
                     </b-button>
-                    <b-button v-else>You have pledge for this reward!</b-button>
+                    <b-button v-else
+                              id="unback-btn"
+                    >
+                        <span>You have pledge for this reward!</span>
+                    </b-button>
                 </b-card>
             </b-col>
         </b-row>
@@ -67,5 +71,19 @@
 </script>
 
 <style scoped>
+    #unback-btn {
+        width: 17em
+    }
 
+    #unback-btn:hover {
+        background: indianred
+    }
+
+    #unback-btn:hover span {
+        display:none
+    }
+
+    #unback-btn:hover:before {
+        content: "Remove pledge";
+    }
 </style>
