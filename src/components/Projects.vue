@@ -5,17 +5,18 @@
         <el-col>
           <el-input placeholder="Search name" v-model="filters[0].value"></el-input>
           <el-select v-model="filters[1].value" placeholder="Select category" multiple="multiple">
-            <el-option label="Arts" value="Arts"></el-option>
-            <el-option label="Crafts" value="Crafts"></el-option>
+            <el-option
+              v-for="category in categories"
+              :label="category.project_category"
+              :key="category.project_category"
+              :value="category.project_category"
+            ></el-option>
           </el-select>
         </el-col>
       </div>
     </el-row>
     <el-col>
       <data-tables :data="this.tableData" :action-col="actionCol" :filters="filters">
-        <el-table-column prop="project_name" label="Name" sortable="custom"></el-table-column>
-        <el-table-column prop="project_category" label="Category" sortable="custom"></el-table-column>
-
         <el-table-column
           v-for="title in titles"
           :prop="title.prop"
@@ -46,7 +47,7 @@ export default {
       ],
       actionCol: {
         props: {
-          label: "Actions"
+          label: ""
         },
         buttons: [
           {
@@ -69,6 +70,7 @@ export default {
 
   beforeMount() {
     this.loadProjects();
+    this.loadHeaders();
     this.loadCategories();
   },
 
@@ -76,17 +78,31 @@ export default {
     changeCategory() {
       // alert("Change category");
     },
-
     loadCategories() {
       axios
-        .get("/categories")
+        .get("/categories/list")
         .then(response => {
-          console.log(response);
+          this.categories = response.data.rows;
+        })
+        .catch(error => {
+          // Failure
+          alert(error);
+        });
+      // this.$refs.table.refresh(); // Force a refresh
+    },
+
+    loadHeaders() {
+      axios
+        .get("/categories/headers")
+        .then(response => {
           var tempColumns = [];
           response.data.fields.forEach(element => {
             tempColumns.push({
               prop: element.name,
-              label: element.name.replace(/_/g, " ")
+              label: element.name
+                .replace(/_/g, " ")
+                .replace("project", "")
+                .toUpperCase()
             });
           });
           this.titles = tempColumns;
@@ -103,7 +119,6 @@ export default {
         .get("/projects")
         .then(response => {
           this.tableData = response.data;
-          console.log(this.tableData);
         })
         .catch(error => {
           alert(error);
