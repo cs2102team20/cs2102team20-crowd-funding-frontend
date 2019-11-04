@@ -3,7 +3,13 @@
     <el-row>
       <div style="margin-bottom: 10px">
         <el-col>
-          <el-input placeholder="Search name" v-model="filters[0].value"></el-input>
+          <el-input
+            class="mt-4 mb-4 ml-4"
+            placeholder="Search name"
+            v-model="searchText"
+            style="width:30%"
+          ></el-input>
+          <b-button v-on:click="triggerSearch()" class="mr-4" variant="primary">Search</b-button>
           <el-select v-model="filters[1].value" placeholder="Select category" multiple="multiple">
             <el-option
               v-for="category in categories"
@@ -64,7 +70,8 @@ export default {
       selectedRow: [],
       categories: [],
       tableData: [],
-      selectedValue: null
+      selectedValue: null,
+      searchText: ""
     };
   },
 
@@ -102,6 +109,7 @@ export default {
               label: element.name
                 .replace(/_/g, " ")
                 .replace("project", "")
+                .replace("email", "Created by")
                 .toUpperCase()
             });
           });
@@ -119,6 +127,33 @@ export default {
         .get("/projects")
         .then(response => {
           this.tableData = response.data;
+          console.log(this.tableData);
+        })
+        .catch(error => {
+          alert(error);
+        });
+    },
+
+    triggerSearch() {
+      this.filters[0].value = this.searchText;
+      const email = this.$store.state.user.email;
+      if (email == null) {
+        return;
+      }
+      const date = new Date();
+      axios
+        .post("/search", {
+          timestamp: date,
+          email: email,
+          search_text: this.searchText
+        })
+        .then(response => {
+          console.log(response);
+          if (response.data == "success") {
+            alert("You have searched for " + this.searchText);
+          } else if (response.data.name == "error") {
+            alert("Server error");
+          }
         })
         .catch(error => {
           alert(error);
