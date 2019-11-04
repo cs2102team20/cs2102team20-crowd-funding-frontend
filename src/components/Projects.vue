@@ -137,13 +137,11 @@ export default {
     triggerSearch() {
       this.filters[0].value = this.searchText;
       const email = this.$store.state.user.email;
-      if (email == null) {
+      if (email == null || this.searchText === "") {
         return;
       }
-      const date = new Date();
       axios
         .post("/search", {
-          timestamp: date,
           email: email,
           search_text: this.searchText
         })
