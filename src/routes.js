@@ -15,7 +15,7 @@ const routes = [
   { path: "/profile/wallet", component: Wallet },
   { path: "/projects", component: Projects },
   { path: "/create", component: Create },
-  { path: `/project/:projectName`, component: Project },
+  { path: "/project/:projectName", component: Project },
   { path: `/profile`, component: Profile }
 ];
 

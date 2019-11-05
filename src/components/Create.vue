@@ -67,10 +67,10 @@
                 })
                 .finally(() => {
                   if (this.createSuccess) {
-                    console.log("redirecting to new page")
+                    console.log("redirecting to new page /project/" + form.projectName)
                     this.$router.push('/project/' + form.projectName)
                   }
-                });
+                })
       },
     }
   }
