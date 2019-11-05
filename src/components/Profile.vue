@@ -31,6 +31,9 @@
         </b-tab>
         <b-tab title="Projects Created">
           <!-- Projects Created -->
+          <projects-created-section
+                  v-bind:createdProjects="createdProjects"
+          />
         </b-tab>
       </b-tabs>
     </div>
@@ -44,23 +47,27 @@
 <script>
   import axios from "axios";
   import ProjectsBackedSection from "../sub-components/ProjectsBackedSection";
+  import ProjectsCreatedSection from "../sub-components/ProjectsCreatedSection";
 
 export default {
   name: "Profile",
   components: {
     ProjectsBackedSection,
+    ProjectsCreatedSection,
   },
   data() {
     return {
       mainProps: { blank: false, blankColor: '#777', width: 250, height: 250, class: 'm1' },
-      backedProjects: []
+      backedProjects: [],
+      createdProjects: [],
     }
   },
   mounted() {
-    this.loadProjects()
+    this.loadBackedProjects()
+    this.loadCreatedProjects()
   },
   methods: {
-    loadProjects() {
+    loadBackedProjects() {
       axios
               .get(
                       "http://localhost:3000/profile/" +
@@ -71,6 +78,22 @@ export default {
                 // console.log(response.data);
                 this.backedProjects = response.data;
                 console.log(this.backedProjects)
+              })
+              .catch(error => {
+                alert(error);
+              });
+    },
+    loadCreatedProjects() {
+      axios
+              .get(
+                      "http://localhost:3000/profile/" +
+                      this.$store.state.user.email +
+                      "/createdProjects"
+              )
+              .then(response => {
+                // console.log(response.data);
+                this.createdProjects = response.data;
+                console.log(this.createdProjects)
               })
               .catch(error => {
                 alert(error);
