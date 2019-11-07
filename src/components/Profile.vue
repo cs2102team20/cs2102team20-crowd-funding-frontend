@@ -189,7 +189,9 @@ export default {
     },
     loadSearchHistory() {
       axios
-        .get("http://localhost:3000/search/" + this.$store.state.user.email)
+        .get(
+          "http://localhost:3000/search/history/" + this.$store.state.user.email
+        )
         .then(response => {
           this.searchHistory = response.data;
         })
