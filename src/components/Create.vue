@@ -56,7 +56,7 @@ export default {
           //this.projectNames.push(parsedProjectName)
           //console.log(this.projectNames.toString());
           alert("Project ~Test~ Created!");
-          // this.$router.push("/project/" + form.projectName);
+          this.$router.push("/project/" + form.projectName);
         })
         .catch(error => {
           // console.log(error.response.data);

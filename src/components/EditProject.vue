@@ -1,9 +1,10 @@
 <template>
   <div class="create-form container fluid" v-if="this.$store.state.auth.isLoggedIn">
     <edit-project-form
-            @create:project="editProject"
+            @edit:project="editProject"
             v-bind:projectNames="projectNames"
             v-bind:project="project"
+            v-bind:rewards="rewards"
     />
     <b-card class="mt-3" header="Form Data Result">
       <pre class="m-0">{{ form }}</pre>
@@ -23,6 +24,7 @@ export default {
     return {
       projectNames: [],
         project: null,
+        rewards: null,
     };
   },
   components: {
@@ -30,6 +32,8 @@ export default {
   },
   mounted() {
     this.loadProjectNames();
+    this.loadProject();
+    this.loadRewards();
   },
   methods: {
     loadProjectNames() {
@@ -44,15 +48,34 @@ export default {
     },
     loadProject() {
         axios
-            .get("http://localhost:3000/editProject/" + this.$route.query.projectName)
+            .get("http://localhost:3000/project/" + this.$route.params.projectName)
             .then(response => {
                 this.project = response.data;
+
+                this.project.project_deadline = this.project.project_deadline
+                    .substr(0, this.project.project_deadline.indexOf("T"));
                 console.log(this.project)
             })
             .catch(error => {
                 alert(error);
             });
     },
+      loadRewards() {
+          axios
+              .get(
+                  "http://localhost:3000/project/" +
+                  this.$route.params.projectName +
+                  "/rewards"
+              )
+              .then(response => {
+                  console.log("Edit project rewards:")
+                  console.log(response.data);
+                  this.rewards = response.data;
+              })
+              .catch(error => {
+                  alert("loadReward()" + error);
+              });
+      },
     updateProject(form) {
       axios
         .put("http://localhost:3000/updateProject", {
