@@ -23,13 +23,9 @@
     </el-row>
     <el-col>
       <data-tables :data="this.tableData" :action-col="actionCol" :filters="filters">
-        <el-table-column
-          v-for="title in titles"
-          :prop="title.prop"
-          :label="title.label"
-          :key="title.prop"
-          sortable="custom"
-        />
+        <el-table-column label="Name" prop="project_name" sortable="custom"></el-table-column>
+        <el-table-column label="Category" prop="project_category" sortable="custom"></el-table-column>
+        <el-table-column label="Creator" prop="email" sortable="custom"></el-table-column>
       </data-tables>
     </el-col>
   </div>
