@@ -132,6 +132,33 @@ export default {
         .then(res => {
           this.isFollowed = Object.entries(res.data).length > 0;
           console.log(res.data);
+        });
+    },
+    clearSearchHistory() {
+      if (this.searchHistory.length === 0) {
+        alert("Your Search History is empty!");
+        return;
+      }
+      axios
+        .post("http://localhost:3000/search/clear", {
+          email: this.$store.state.user.email
+        })
+        .then(response => {
+          if (response.data == "success") {
+            alert("Your Search History has been cleared!");
+            this.loadSearchHistory();
+          } else {
+            alert("Internal Server Error");
+          }
+        });
+    },
+    loadSearchHistory() {
+      axios
+        .get(
+          "http://localhost:3000/search/history/" + this.$store.state.user.email
+        )
+        .then(response => {
+          this.searchHistory = response.data;
         })
         .catch(error => {
           alert(error);
