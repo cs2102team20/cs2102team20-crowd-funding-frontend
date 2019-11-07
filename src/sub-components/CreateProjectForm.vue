@@ -148,8 +148,7 @@ export default {
       this.form.projectFundingGoal = "";
       this.form.projectDescription = "";
     },
-    createProject(evt) {
-      evt.preventDefault();
+    createProject() {
       // replace multi whitespaces with single space and remove extra space on both ends
       var parsedProjectName = this.form.projectName
         .replace(/\s+\s/g, " ")
