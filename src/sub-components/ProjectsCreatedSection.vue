@@ -14,7 +14,7 @@
                     </b-card-body>
                 </b-col>
                 <b-col md="2">
-                    <b-button variant="success">Edit</b-button>
+                    <b-button variant="success" @click="editCreatedProject(project.project_name)">Edit</b-button>
                     <b-button variant="danger" @click="deleteCreatedProject(project.project_name)">Delete</b-button>
                 </b-col>
             </b-row>
@@ -37,6 +37,9 @@
                 console.log("projectName is " + projectName)
                 this.$emit("delete:createdProject", projectName)
             },
+            editCreatedProject(projectName) {
+                this.$router.push("/editProject/" + projectName)
+            }
         }
     }
 </script>
