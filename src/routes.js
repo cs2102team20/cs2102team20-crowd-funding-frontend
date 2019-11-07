@@ -17,7 +17,7 @@ const routes = [
   { path: "/projects", component: Projects },
   { path: "/create", component: Create },
   { path: "/project/:projectName", component: Project },
-  { path: `/profile`, component: Profile },
+  { path: `/profile/:email`, component: Profile },
   { path: `/editProject/:projectName`, component: EditProject },
 ];
 

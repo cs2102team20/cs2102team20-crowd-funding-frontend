@@ -13,7 +13,7 @@
                         </b-card-text>
                     </b-card-body>
                 </b-col>
-                <b-col md="2">
+                <b-col md="2" v-if="isUser">
                     <b-button variant="success" @click="editCreatedProject(project.project_name)">Edit</b-button>
                     <b-button variant="danger" @click="deleteCreatedProject(project.project_name)">Delete</b-button>
                 </b-col>
@@ -30,7 +30,10 @@
             createdProjects: Array
         },
         computed: {
-
+            // Check if the current profile viewed belongs to the login user
+            isUser() {
+                return this.$store.state.user.email == this.$route.params.email
+            }
         },
         methods: {
             deleteCreatedProject(projectName) {

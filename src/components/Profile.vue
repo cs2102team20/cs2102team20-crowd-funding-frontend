@@ -74,13 +74,14 @@ export default {
     numOfCreatedProjects() {
       return this.createdProjects.length
     }
+    ,
   },
   methods: {
     loadBackedProjects() {
       axios
               .get(
                       "http://localhost:3000/profile/" +
-                      this.$store.state.user.email +
+                      this.$route.params.email +
                       "/backedProjects"
               )
               .then(response => {
@@ -96,7 +97,7 @@ export default {
       axios
               .get(
                       "http://localhost:3000/profile/" +
-                      this.$store.state.user.email +
+                      this.$route.params.email +
                       "/createdProjects"
               )
               .then(response => {
