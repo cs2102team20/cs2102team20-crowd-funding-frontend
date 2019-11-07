@@ -130,22 +130,6 @@ export default {
                 alert(error.response.data);
               });
     },
-    unbackBackedProject(projectName) {
-      axios
-              .delete("http://localhost:3000/profile/" + this.$store.state.user.email + "/unbackProject", projectName)
-              .then(response => {
-                //this.$set(this.projectNames, 0, parsedProjectName)
-                //this.projectNames.push(parsedProjectName)
-                //console.log(this.projectNames.toString());
-                alert(response.data);
-                // this.$router.push("/project/" + form.projectName);
-
-              })
-              .catch(error => {
-                // console.log(error.response.data);
-                alert(error.response.data);
-              });
-    }
   }
 };
 </script>
