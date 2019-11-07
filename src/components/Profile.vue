@@ -11,11 +11,10 @@
                 v-if="isUser == false && isFollowed == false"
                 variant="success"
                 @click="follow">Follow</b-button>
-        <!--
         <b-button
                 v-if="isUser == false && isFollowed == true"
                 variant="danger"
-                @click="unfollow">Unfollow</b-button>-->
+                @click="unfollow">Unfollow</b-button>
       </b-col>
     </b-row>
     <br><br>
@@ -70,10 +69,11 @@ export default {
       mainProps: { blank: false, blankColor: '#777', width: 250, height: 250, class: 'm1' },
       backedProjects: [],
       createdProjects: [],
-      isFollowed: false,
+      isFollowed: null,
     }
   },
   mounted() {
+    this.loadIsFollowed()
     this.loadBackedProjects()
     this.loadCreatedProjects()
   },
@@ -90,6 +90,18 @@ export default {
     }
   },
   methods: {
+    loadIsFollowed() {
+      console.log("http://localhost:3000/profile/follows/" + this.$store.state.user.email + "/" + this.$route.params.email)
+      axios
+              .get("http://localhost:3000/profile/follows/" + this.$store.state.user.email + "/" + this.$route.params.email)
+              .then(res => {
+                this.isFollowed = Object.entries(res.data).length > 0
+                console.log(res.data)
+              })
+              .catch(error => {
+                alert(error)
+              })
+    },
     loadBackedProjects() {
       axios
               .get(
@@ -156,7 +168,22 @@ export default {
                 //this.projectNames.push(parsedProjectName)
                 //console.log(this.projectNames.toString());
                 alert("Followed !");
-                this.isFollowed = true;
+                this.isFollowed = !this.isFollowed;
+              })
+              .catch(error => {
+                // console.log(error.response.data);
+                alert(error.response.data);
+              });
+    },
+    unfollow() {
+      axios
+              .delete("http://localhost:3000/profile/follows/"+ this.$store.state.user.email + "/" + this.$route.params.email)
+              .then(response => {
+                //this.$set(this.projectNames, 0, parsedProjectName)
+                //this.projectNames.push(parsedProjectName)
+                //console.log(this.projectNames.toString());
+                alert("Unfollowed !");
+                this.isFollowed = !this.isFollowed;
               })
               .catch(error => {
                 // console.log(error.response.data);
