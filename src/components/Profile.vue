@@ -19,6 +19,7 @@
           variant="danger"
           @click="unfollow"
         >Unfollow</b-button>
+        <b-button v-if="isUser == true" variant="success" @click="goToWallet">Wallet</b-button>
       </b-col>
     </b-row>
     <br />
@@ -286,6 +287,9 @@ export default {
           // console.log(error.response.data);
           alert(error.response.data);
         });
+    },
+    goToWallet() {
+      this.$router.push("/profile/wallet");
     }
   }
 };
