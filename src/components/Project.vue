@@ -214,6 +214,8 @@ export default {
         .then(response => {
           // console.log(response.data);
           this.rewards = response.data;
+          console.log("rewards are\n")
+          console.log(this.rewards)
         })
         .catch(error => {
           alert("loadReward()" + error);
@@ -290,7 +292,7 @@ export default {
                 projectName: this.project.project_name,
               })
               .then(response => {
-                this.$set(this.comments, 0, response.data)
+                this.$set(this.comments, this.comments.length, response.data)
               })
               .catch(error => {
                 alert("postComment()" + error)
