@@ -277,7 +277,10 @@ export default {
       return now > projectDeadline;
     },
     fullyFunded() {
-      return this.projectCurrentFunding >= this.project.project_funding_goal;
+      return parseFloat(this.projectCurrentFunding.project_current_funding) >= parseFloat(this.project.project_funding_goal)
+    },
+    isOwner() {
+      return this.$store.state.user.email == this.project.email
     }
   },
   methods: {
@@ -507,46 +510,39 @@ export default {
         reward_name: reward.reward_name
       });
       axios
-        .post(`/project/${this.project.project_name}/unback`, {
-          user_email: this.$store.state.user.email,
-          project_backed_name: this.project.project_name,
-          reward_name: reward.reward_name
-        })
-        .then(response => {
-          if (response.data == "Failure") {
-            this.$message({
-              message: "Unable to unback at the moment...",
-              type: "error"
-            });
-          } else {
-            this.$message({
-              message: "Successfully unback",
-              type: "success"
-            });
-            // this.$bvModal.hide("backs-modal");
-            this.is_backed = false;
-            this.listBackings();
-            this.$delete(
-              this.backedRewards,
-              this.backedRewards.indexOf(reward.reward_name)
-            );
-            this.$set(
-              this.project,
-              "project_current_funding",
-              this.project.project_current_funding -
-                parseFloat(reward.back_amount)
-            );
-            this.$set(this, "rewardsBackedCount", this.rewardsBackedCount - 1);
-            console.log("unback: backedRewards");
-            console.log(this.backedRewards);
-          }
-        })
-        .catch(() => {
-          this.$message({
-            message: "An error occurred.",
-            type: "warning"
-          });
-        });
+              .post(`/project/${this.project.project_name}/unback`, {
+                user_email: this.$store.state.user.email,
+                project_backed_name: this.project.project_name,
+                reward_name: reward.reward_name,
+              })
+              .then(response => {
+                if (response.data == "Failure") {
+                  this.$message({
+                    message: "Unable to unback at the moment...",
+                    type: "error"
+                  });
+                } else {
+                  this.$message({
+                    message: "Successfully unback",
+                    type: "success"
+                  });
+                  // this.$bvModal.hide("backs-modal");
+                  this.is_backed = false;
+                  this.listBackings();
+                  this.$delete(this.backedRewards, this.backedRewards.indexOf(reward.reward_name))
+                  this.$set(this.project, 'project_current_funding',
+                          this.projectCurrentFunding.project_current_funding - parseFloat(reward.back_amount))
+                  this.$set(this, 'rewardsBackedCount', this.rewardsBackedCount - 1)
+                  console.log("unback: backedRewards")
+                  console.log(this.backedRewards)
+                }
+              })
+              .catch(() => {
+                this.$message({
+                  message: "An error occurred.",
+                  type: "warning"
+                });
+              });
     },
     donate(detail) {
       axios
