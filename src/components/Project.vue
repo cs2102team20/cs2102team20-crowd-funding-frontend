@@ -12,7 +12,7 @@
           </b-col>
           <b-col md="7">
             <b-card-text>
-              <h1>${{project.project_current_funding}}</h1>
+              <h1>${{this.projectCurrentFunding}}</h1>
               <p>pledged of ${{project.project_funding_goal}} funding goal</p>
             </b-card-text>
             <b-card-text>
@@ -27,8 +27,15 @@
               <!--
               <b-button variant="warning" v-b-modal.backs-modal @click="listBackings">Manage Backings</b-button>
               -->
-              <b-button v-if="!hasEnded" variant="success" v-b-modal.backs-modal>Ongoing Campaign</b-button>
-              <b-button v-if="hasEnded" variant="danger" v-b-modal.backs-modal>Campaign Ended</b-button>
+              <b-button v-if="!hasEnded" variant="success" :disabled="true" v-b-modal.backs-modal>Ongoing Campaign</b-button>
+              <b-button v-if="hasEnded" variant="dark" :disabled="true" v-b-modal.backs-modal>Campaign Ended</b-button>
+              <br>
+              <b-button variant="outline-success"
+                        v-if="hasEnded && !fullyFunded"
+                        @click="collectRefund">Collect Refund</b-button>
+              <b-button variant="outline-success"
+                        v-if="hasEnded && fullyFunded"
+                        v-b-modal.backs-modal>Give Feedback</b-button>
               <!-- <br/> -->
               <!-- <b-button v-if="is_backed" variant="danger" v-b-modal.backs-modal @click="listBackings">Unback this project</b-button> -->
             </p>
@@ -122,6 +129,7 @@ export default {
   data() {
     return {
       project: null,
+      projectCurrentFunding: null,
       rewards: null,
       updates: [
         {
@@ -197,6 +205,7 @@ export default {
   },
   beforeMount() {
     this.loadProject();
+    this.loadCurrentFunding();
     this.loadRewards();
     this.loadUpdates();
     this.loadComments();
@@ -213,7 +222,10 @@ export default {
       //alert("project deadline: " + projectDeadline)
 
       return now > projectDeadline
-    }
+    },
+    fullyFunded() {
+      return this.projectCurrentFunding >= this.project.project_funding_goal
+    },
   },
   methods: {
     loadProject() {
@@ -228,6 +240,19 @@ export default {
           // Failure
           alert("loadProjet(): " + error);
         });
+    },
+    loadCurrentFunding() {
+      axios
+              .get("http://localhost:3000/project/currentFunding/" +
+                      this.$route.params.projectName)
+              .then(response => {
+                //alert("current funding is " + response.data.project_current_funding);
+                this.projectCurrentFunding = parseFloat(response.data.project_current_funding);
+              })
+              .catch(error => {
+                // Failure
+                alert(error);
+              });
     },
     loadRewards() {
       axios
@@ -532,6 +557,9 @@ export default {
 
       return year + "/" + month + "/" + day;
     },
+    collectRefund() {
+      
+    }
   }
 };
 </script>
