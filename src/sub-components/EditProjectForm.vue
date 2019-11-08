@@ -74,37 +74,37 @@
 
     <h3>Rewards</h3>
     <div v-for="(reward, index) in rewards" :key="index" class="card reward">
-      <b-form-group
-              v-if="reward.name "
-              id="input-reward-name" label="Reward Name:" label-for="input-reward-name">
-        <b-form-input id="input-reward-name" v-model="reward.reward_name" type="text" required></b-form-input>
-      </b-form-group>
-      <b-form-group
-        id="input-reward-pledge-amount"
-        label="Reward Pledge Amount:"
-        label-for="input-reward-pledge-amount"
-      >
-        <b-form-input
+      <div :hidden="isDonate(reward)">
+        <b-form-group id="input-reward-name" label="Reward Name:" label-for="input-reward-name">
+          <b-form-input id="input-reward-name" v-model="reward.reward_name" type="text" required></b-form-input>
+        </b-form-group>
+        <b-form-group
           id="input-reward-pledge-amount"
-          v-model="reward.reward_pledge_amount"
-          type="number"
-          step=".01"
-          required
-        ></b-form-input>
-      </b-form-group>
-      <b-form-group
-        id="input-reward-description"
-        label="Reward Description: "
-        label-for="textarea-reward-description"
-      >
-        <b-form-textarea
-          id="textarea-reward-description"
-          v-model="reward.reward_description"
-          placeholder="Tell us more about the reward..."
-          rows="3"
-          max-rows="16"
-        ></b-form-textarea>
-      </b-form-group>
+          label="Reward Pledge Amount:"
+          label-for="input-reward-pledge-amount"
+        >
+          <b-form-input
+            id="input-reward-pledge-amount"
+            v-model="reward.reward_pledge_amount"
+            type="number"
+            step=".01"
+            required
+          ></b-form-input>
+        </b-form-group>
+        <b-form-group
+          id="input-reward-description"
+          label="Reward Description: "
+          label-for="textarea-reward-description"
+        >
+          <b-form-textarea
+            id="textarea-reward-description"
+            v-model="reward.reward_description"
+            placeholder="Tell us more about the reward..."
+            rows="3"
+            max-rows="16"
+          ></b-form-textarea>
+        </b-form-group>
+      </div>
     </div>
     <b-button variant="success" @click="addMoreReward">Add More Reward</b-button>
     <b-button type="submit" variant="primary">Submit</b-button>
@@ -116,7 +116,7 @@ export default {
   name: "EditProjectForm",
   props: {
     project: Object,
-      rewards: Array,
+    rewards: Array,
   },
   data() {
     return {
@@ -160,7 +160,8 @@ export default {
       });
     },
     addMoreReward() {
-      this.form.projectRewards.push({
+      alert("Adding more reward")
+      this.rewards.push({
         rewardName: "",
         rewardPledgeAmount: "",
         rewardDescription: ""
@@ -168,6 +169,9 @@ export default {
     },
     clearStatus() {
       this.formStatus.nameError = false;
+    },
+    isDonate(reward) {
+      return reward.reward_name === null && reward.reward_description === null
     }
   }
 };
