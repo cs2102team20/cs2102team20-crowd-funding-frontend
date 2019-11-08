@@ -12,7 +12,7 @@
           </b-col>
           <b-col md="7">
             <b-card-text>
-              <h1>${{this.projectCurrentFunding}}</h1>
+              <h1>${{this.projectCurrentFunding.project_current_funding}}</h1>
               <p>pledged of ${{project.project_funding_goal}} funding goal</p>
             </b-card-text>
             <b-card-text>
@@ -247,7 +247,9 @@ export default {
                       this.$route.params.projectName)
               .then(response => {
                 //alert("current funding is " + response.data.project_current_funding);
-                this.projectCurrentFunding = parseFloat(response.data.project_current_funding);
+                this.projectCurrentFunding = response.data;
+                this.projectCurrentFunding.project_current_funding = response.data.project_current_funding != null ?
+                        parseFloat(response.data.project_current_funding) : 0;
               })
               .catch(error => {
                 // Failure
@@ -387,8 +389,8 @@ export default {
             this.is_backed = true;
             this.listBackings();
             this.$set(this.backedRewards, this.backedRewards.length, reward.reward_name)
-            this.$set(this.project, 'project_current_funding',
-                    this.project.project_current_funding + parseFloat(reward.back_amount))
+            this.$set(this.projectCurrentFunding, 'project_current_funding' ,
+                    this.projectCurrentFunding.project_current_funding + parseFloat(reward.back_amount))
             this.$set(this, 'rewardsBackedCount', this.rewardsBackedCount + 1)
             console.log("back: backedRewards")
             console.log(this.backedRewards)
@@ -558,7 +560,18 @@ export default {
       return year + "/" + month + "/" + day;
     },
     collectRefund() {
-      
+      alert("collect refund")
+      axios
+              .put("/project/collectRefund", {
+                backer_email: this.$store.state.user.email,
+                project_name: this.project.project_name
+              })
+              .then(res => {
+                alert(res.data)
+              })
+              .catch(error => {
+                alert(error)
+              })
     }
   }
 };
