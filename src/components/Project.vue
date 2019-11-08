@@ -24,7 +24,11 @@
               <p>days to go</p>
             </b-card-text>
             <p v-if="this.$store.state.auth.isLoggedIn">
+              <!--
               <b-button variant="warning" v-b-modal.backs-modal @click="listBackings">Manage Backings</b-button>
+              -->
+              <b-button v-if="!hasEnded" variant="success" v-b-modal.backs-modal>Ongoing Campaign</b-button>
+              <b-button v-if="hasEnded" variant="danger" v-b-modal.backs-modal>Campaign Ended</b-button>
               <!-- <br/> -->
               <!-- <b-button v-if="is_backed" variant="danger" v-b-modal.backs-modal @click="listBackings">Unback this project</b-button> -->
             </p>
@@ -34,7 +38,7 @@
               </b-button>
             </p>
             <p>
-              This project will only be funding if it reaches
+              This project will only be funded if it reaches
               its goal by {{this.getFormattedDate(new Date(this.project.project_deadline))}}
             </p>
           </b-col>
@@ -202,6 +206,14 @@ export default {
     this.getBackedRewards();
   },
   computed: {
+    hasEnded() {
+      let now = new Date()
+      let projectDeadline = new Date(this.project.project_deadline)
+      //alert("today: " + now)
+      //alert("project deadline: " + projectDeadline)
+
+      return now > projectDeadline
+    }
   },
   methods: {
     loadProject() {
@@ -286,12 +298,6 @@ export default {
                       + this.$store.state.user.email)
               .then(response => {
                 this.backedRewards = response.data.map(reward => reward.reward_name)
-                //console.log("Backed projects are")
-                //console.log(this.backedRewards)
-                //console.log("Response data\n")
-                //console.log(response.data)
-                //console.log("Response data after turning to array is\n")
-                //console.log(response.data.map(reward => reward.reward_name))
               })
               .catch(error => {
                 alert("getBackedRewards() " + error)
