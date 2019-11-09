@@ -295,7 +295,7 @@ export default {
           alert("loadProjcet(): " + error);
         });
     },
-    loadCurrentFunding() {
+      loadCurrentFunding() {
       axios
         .get(
           "http://localhost:3000/project/currentFunding/" +
