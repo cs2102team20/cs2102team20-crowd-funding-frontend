@@ -47,27 +47,29 @@
                         <h6>{{reward.reward_name}}</h6>
                         <p>{{reward.reward_description}}</p>
                     <!-- Buttons for Backed, Unbacked, Donate -->
-                    <b-button
-                            v-if="!isBackedReward(reward.reward_name) && !isDonate(reward) && !isOwner"
-                            @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
-                            href="#" variant="success"
-                    >
-                        Pledge
-                    </b-button>
-                    <b-button v-if="isBackedReward(reward.reward_name) && !isDonate(reward) && !isOwner"
-                              id="unback-btn"
-                              @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
-                    >
-                        <span>You have pledge for this reward!</span>
-                    </b-button>
-                    <b-button
-                            id="donate-btn"
-                            v-else-if="isDonate(reward) && !isOwner"
-                            @click="donate(reward.reward_pledge_amount)"
-                            href="#" variant="success"
-                    >
-                        Donate
-                    </b-button>
+                    <div v-if="!project.ended || isOwner">
+                        <b-button
+                                v-if="!isBackedReward(reward.reward_name) && !isDonate(reward) && !isOwner"
+                                @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
+                                href="#" variant="success"
+                        >
+                            Pledge
+                        </b-button>
+                        <b-button v-if="isBackedReward(reward.reward_name) && !isDonate(reward) && !isOwner"
+                                  id="unback-btn"
+                                  @click="pledge(reward.reward_name, reward.reward_pledge_amount)"
+                        >
+                            <span>You have pledge for this reward!</span>
+                        </b-button>
+                        <b-button
+                                id="donate-btn"
+                                v-else-if="isDonate(reward) && !isOwner"
+                                @click="donate(reward.reward_pledge_amount)"
+                                href="#" variant="success"
+                        >
+                            Donate
+                        </b-button>
+                    </div>
                 </b-card>
             </b-col>
         </b-row>
